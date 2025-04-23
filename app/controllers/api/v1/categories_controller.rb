@@ -1,4 +1,12 @@
 class Api::V1::CategoriesController < ApplicationController
+
+    # GET /api/v1/categories
+    def index
+      categories = Category.all
+      render json: categories
+    end
+  
+    # POST /api/v1/categories
     def create
       category = Category.new(category_params)
       if category.save
