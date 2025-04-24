@@ -13,4 +13,9 @@ class Api::V1::MemosController < ApplicationController
     def memo_params
       params.require(:memo).permit(:content, :category_id)
     end
+    def render_create_error
+      render json: {
+        errors: @resource.errors.full_messages
+      }, status: :unprocessable_entity
+    end
 end
