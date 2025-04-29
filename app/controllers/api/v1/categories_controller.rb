@@ -1,30 +1,28 @@
 class Api::V1::CategoriesController < ApplicationController
+  before_action :authenticate_api_v1_user!, only: [:index, :create]
+  before_action :set_user, only: [:index, :create]
 
-    # GET /api/v1/categories
-    def index
-      categories = Category.all
-      render json: categories
-    end
+  def index
+    categories = @user.categories
+    render json: categories
+  end
   
-    # POST /api/v1/categories
-    def create
-      category = current_user.categories.build(category_params)
-      if category.save
-        render json: category, status: :created
-      else
-        render json: category.errors, status: :unprocessable_entity
-      end
-    end
-    
-    private
-    
-    def category_params
-      params.require(:category).permit(:name)
-    end
-    
-    def render_create_error
-      render json: {
-        errors: @resource.errors.full_messages
-      }, status: :unprocessable_entity
+  def create
+    category = Category.new(category_params)
+    if category.save
+      render json: category, status: :created
+    else
+      render json: category.errors, status: :unprocessable_entity
     end
   end
+
+  private
+
+  def category_params
+    params.require(:category).permit(:name).merge(user_id: @user.id)
+  end
+
+  def set_user
+    @user = current_api_v1_user
+  end
+end

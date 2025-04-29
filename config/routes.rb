@@ -8,6 +8,11 @@ Rails.application.routes.draw do
     }
       resources :categories, only: [:index, :create]
       resources :memos, only: [:create]
+      resources :users, only: [] do
+        collection do
+          get :user_name
+        end
+      end
     end
   end  
 end
